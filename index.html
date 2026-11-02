@@ -81,6 +81,9 @@
         }
 
         .passes-box { background: rgba(255, 255, 255, 0.15); padding: 15px 25px; border-radius: 20px; margin: 10px 0; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .passes-box p { margin: 6px 0; }
+        .total-pases { font-size: 1.5rem; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
+        .detalle-pases { font-size: 0.95rem; opacity: 0.9; letter-spacing: 1px; }
         .btn-ingresar { background-color: #ffffff; color: #333; padding: 14px 40px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-top: 10px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
     </style>
 </head>
@@ -97,7 +100,8 @@
             <h1 id="nombre-invitado" class="cargando-nombre">Cargando nombre de invitado...</h1>
             <div class="passes-box">
                 <p>Hemos reservado en su honor</p>
-                <p><strong><span id="num-pases">...</span> Pase(s)</strong></p>
+                <p class="total-pases" id="total-pases">...</p>
+                <p class="detalle-pases" id="detalle-pases"></p>
             </div>
             <button class="btn-ingresar" onclick="abrirInvitacion()">Ver detalles</button>
         </div>
@@ -121,6 +125,21 @@
             }, 1000);
         }
 
+        // Muestra "4 PASES" y debajo "2 niños | 2 adultos"
+        function mostrarPases(adultos, ninos, total) {
+            adultos = Number(adultos) || 0;
+            ninos = Number(ninos) || 0;
+            total = Number(total) || (adultos + ninos);
+
+            document.getElementById('total-pases').innerText =
+                total + (total === 1 ? ' pase' : ' pases');
+
+            const partes = [];
+            if (ninos > 0) partes.push(ninos + (ninos === 1 ? ' niño' : ' niños'));
+            if (adultos > 0) partes.push(adultos + (adultos === 1 ? ' adulto' : ' adultos'));
+            document.getElementById('detalle-pases').innerText = partes.length ? '(' + partes.join(' | ') + ')' : '';
+        }
+
         async function obtenerDatosURL() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
@@ -131,7 +150,7 @@
                 elementoNombre.innerText = "Invitado Especial";
                 elementoNombre.classList.remove('cargando-nombre');
                 elementoNombre.style.opacity = '1';
-                document.getElementById('num-pases').innerText = "1";
+                mostrarPases(1, 0, 1);
                 return;
             }
 
@@ -148,7 +167,7 @@
                         // Cambiamos al nombre real y quitamos el parpadeo
                         elementoNombre.innerText = datos.nombre;
                         elementoNombre.classList.remove('cargando-nombre');
-                        document.getElementById('num-pases').innerText = datos.pases;
+                        mostrarPases(datos.adultos, datos.ninos, datos.total);
                         
                         // Hacemos aparecer el nombre real con una transición suave
                         elementoNombre.style.opacity = '1';
