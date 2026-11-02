@@ -135,8 +135,8 @@
                 total + (total === 1 ? ' pase' : ' pases');
 
             const partes = [];
-            if (ninos > 0) partes.push(ninos + (ninos === 1 ? ' niño' : ' niños'));
             if (adultos > 0) partes.push(adultos + (adultos === 1 ? ' adulto' : ' adultos'));
+            if (ninos > 0) partes.push(ninos + (ninos === 1 ? ' niño' : ' niños'));
             document.getElementById('detalle-pases').innerText = partes.length ? '(' + partes.join(' | ') + ')' : '';
         }
 
